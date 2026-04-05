@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TapChat</title>
+
+<link rel="icon" type="image/png" href="logo.png">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: #0a0a0a;
+    color: white;
+}
+
+/* 🌌 ФОН */
+.bg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -3;
+    background: #0a0a0a;
+}
+
+/* 💡 СВЕТ */
+.bg::before,
+.bg::after {
+    content: "";
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.4;
+    animation: moveLight 3s infinite alternate ease-in-out;
+}
+
+.bg::before {
+    background: #2563eb;
+    top: 10%;
+    left: 10%;
+}
+
+.bg::after {
+    background: #1e3a8a;
+    bottom: 10%;
+    right: 10%;
+    animation-delay: 3s;
+}
+
+@keyframes moveLight {
+    0% { transform: translate(0,0) scale(1); }
+    100% { transform: translate(100px, -80px) scale(1.2); }
+}
+
+/* ✨ ЧАСТИЦЫ */
+#particles {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    top: 0;
+    left: 0;
+    filter: blur(1px); /* блюр частиц */
+}
+
+/* 🌐 LANG */
+.lang {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+}
+
+.lang button {
+    margin-left: 5px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 10px;
+    background: #222;
+    color: white;
+    cursor: pointer;
+}
+
+/* 🔥 HERO */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    text-align: center;
+}
+
+.logo {
+    width: 250px;
+    animation: logoIn 1.2s ease;
+}
+
+@keyframes logoIn {
+    from { opacity: 0; transform: scale(0.7); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+h1 {
+    font-size: 42px;
+    margin-top: 16px;
+}
+
+.subtitle {
+    opacity: 0.7;
+    margin-top: 8px;
+}
+
+/* 🔘 КНОПКИ */
+.button {
+    margin-top: 24px;
+    padding: 14px 32px;
+    border-radius: 40px;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 200px;
+    transition: 0.3s;
+}
+
+.button:hover {
+    transform: scale(1.05);
+}
+
+/* 📦 СЕКЦИИ */
+.section {
+    padding: 80px 20px;
+    max-width: 900px;
+    margin: auto;
+}
+
+.section h2 {
+    margin-bottom: 20px;
+}
+
+/* 🧊 GLASS (улучшенный) */
+.glass {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 0 20px rgba(37,99,235,0.15); /* glow */
+}
+
+/* 📊 КАРТОЧКИ */
+.cards {
+    display: grid;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+/* ✨ FADE */
+.fade {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: 0.8s;
+}
+
+.fade.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 🔻 FOOTER */
+.footer {
+    text-align: center;
+    padding: 30px;
+    opacity: 0.5;
+}
+
+/* 📱 MOBILE */
+@media (max-width: 600px) {
+    h1 { font-size: 32px; }
+    .button { min-width: 160px; }
+}
+
+/* 💻 DESKTOP */
+@media (min-width: 768px) {
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+<canvas id="particles"></canvas>
+
+<div class="lang">
+    <button onclick="setLang('ru')">RU</button>
+    <button onclick="setLang('en')">EN</button>
+</div>
+
+<div class="hero">
+    <img src="logo.png" class="logo">
+    <h1>TapChat</h1>
+    <p id="subtitle" class="subtitle"></p>
+
+    <a href="#download" class="button" id="startBtn"></a>
+</div>
+
+<div class="section fade">
+    <h2 id="why"></h2>
+
+    <div class="cards">
+        <div class="glass"><h3 data-key="sec1"></h3></div>
+        <div class="glass"><h3 data-key="sec2"></h3></div>
+        <div class="glass"><h3 data-key="sec3"></h3></div>
+        <div class="glass"><h3 data-key="sec4"></h3></div>
+    </div>
+</div>
+
+<div class="section fade" id="download">
+    <h2 id="soon"></h2>
+    <p id="soonDesc" style="opacity:0.7;"></p>
+
+    <a href="#" class="button" id="downloadBtn"></a>
+</div>
+
+<div class="footer">© 2026 TapChat</div>
+
+<script>
+// 🌐 ТЕКСТЫ
+const translations = {
+    ru: {
+        subtitle: "Децентрализованный мессенджер",
+        why: "Почему TapChat?",
+        sec1: "Полная безопасность",
+        sec2: "Децентрализация",
+        sec3: "Высокая скорость",
+        sec4: "Приватность",
+        soon: "Скоро запуск",
+        soonDesc: "Приложение скоро выйдет. Ссылка появится здесь.",
+        startBtn: "Скоро доступно",
+        downloadBtn: "Скачать (скоро)"
+    },
+    en: {
+        subtitle: "Decentralized messenger",
+        why: "Why TapChat?",
+        sec1: "Full security",
+        sec2: "Decentralization",
+        sec3: "High speed",
+        sec4: "Privacy",
+        soon: "Coming soon",
+        soonDesc: "The app will be released soon.",
+        startBtn: "Coming soon",
+        downloadBtn: "Download (soon)"
+    }
+};
+
+function setLang(lang) {
+    document.getElementById("subtitle").innerText = translations[lang].subtitle;
+    document.getElementById("why").innerText = translations[lang].why;
+    document.getElementById("soon").innerText = translations[lang].soon;
+    document.getElementById("soonDesc").innerText = translations[lang].soonDesc;
+    document.getElementById("startBtn").innerText = translations[lang].startBtn;
+    document.getElementById("downloadBtn").innerText = translations[lang].downloadBtn;
+
+    document.querySelectorAll("[data-key]").forEach(el => {
+        el.innerText = translations[lang][el.dataset.key];
+    });
+}
+
+setLang('ru');
+
+// ✨ FADE
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add("show");
+    });
+});
+document.querySelectorAll(".fade").forEach(el => observer.observe(el));
+
+/* 🔥 ЧАСТИЦЫ (СЕТЬ + ПЛАВНОЕ ПРИТЯЖЕНИЕ К КУРСОРУ) */
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+let particles = [];
+let mouse = { x: null, y: null };
+
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+window.addEventListener("mousemove", (e) => {
+    mouse.x = e.x;
+    mouse.y = e.y;
+});
+
+function createParticles() {
+    particles = [];
+    for (let i = 0; i < 70; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 2 + 1,
+            vx: (Math.random() - 0.5) * 0.4,   // скорость X
+            vy: (Math.random() - 0.5) * 0.4    // скорость Y
+        });
+    }
+}
+
+function drawParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 1. ПЛАВНОЕ ПРИТЯЖЕНИЕ К КУРСОРУ
+    const ATTRACTION_RADIUS = 150;
+    const ATTRACTION_STRENGTH = 0.02;  // маленькая сила для плавности
+    const MAX_SPEED = 1.5;             // ограничим, чтобы не убегали слишком резко
+
+    if (mouse.x !== null && mouse.y !== null) {
+        particles.forEach(p => {
+            const dx = mouse.x - p.x;
+            const dy = mouse.y - p.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            
+            if (dist < ATTRACTION_RADIUS && dist > 0.5) {
+                // направление к курсору
+                const dirX = dx / dist;
+                const dirY = dy / dist;
+                // сила притяжения тем сильнее, чем ближе частица (но не слишком резко)
+                const force = (1 - dist / ATTRACTION_RADIUS) * ATTRACTION_STRENGTH;
+                p.vx += dirX * force;
+                p.vy += dirY * force;
+                
+                // небольшое трение для гладкости
+                p.vx *= 0.98;
+                p.vy *= 0.98;
+                
+                // ограничение скорости
+                const spd = Math.hypot(p.vx, p.vy);
+                if (spd > MAX_SPEED) {
+                    p.vx = (p.vx / spd) * MAX_SPEED;
+                    p.vy = (p.vy / spd) * MAX_SPEED;
+                }
+            }
+        });
+    }
+
+    // 2. ОБНОВЛЕНИЕ ПОЗИЦИЙ
+    particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        
+        // телепортация через границы
+        if (p.x > canvas.width) p.x = 0;
+        if (p.x < 0) p.x = canvas.width;
+        if (p.y > canvas.height) p.y = 0;
+        if (p.y < 0) p.y = canvas.height;
+    });
+
+    // 3. РИСОВАНИЕ ЧАСТИЦ с GLOW
+    particles.forEach(p => {
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "rgba(255,255,255,0.8)";
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255,0.8)";
+        ctx.fill();
+    });
+    ctx.shadowBlur = 0;
+
+    // 4. ЛИНИИ МЕЖДУ БЛИЗКИМИ ЧАСТИЦАМИ
+    for (let a = 0; a < particles.length; a++) {
+        for (let b = a + 1; b < particles.length; b++) {
+            let dx = particles[a].x - particles[b].x;
+            let dy = particles[a].y - particles[b].y;
+            let dist = Math.sqrt(dx * dx + dy * dy);
+            
+            if (dist < 120) {
+                ctx.strokeStyle = "rgba(255,255,255," + (1 - dist/120) * 0.4 + ")";
+                ctx.beginPath();
+                ctx.moveTo(particles[a].x, particles[a].y);
+                ctx.lineTo(particles[b].x, particles[b].y);
+                ctx.stroke();
+            }
+        }
+    }
+    
+    // 5. ЛИНИИ К КУРСОРУ (для визуального "цепляния") — тоже делаем плавными по прозрачности
+    if (mouse.x !== null && mouse.y !== null) {
+        particles.forEach(p => {
+            let dx = p.x - mouse.x;
+            let dy = p.y - mouse.y;
+            let dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 150) {
+                // плавное затухание линии
+                const opacity = (1 - dist / 150) * 0.6;
+                ctx.strokeStyle = `rgba(37, 99, 235, ${opacity})`;
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(mouse.x, mouse.y);
+                ctx.stroke();
+            }
+        });
+    }
+
+    requestAnimationFrame(drawParticles);
+}
+
+createParticles();
+drawParticles();
+</script>
+
+</body>
+</html>
