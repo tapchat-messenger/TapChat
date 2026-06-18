@@ -301,7 +301,9 @@ function setLang(lang) {
     document.getElementById("downloadTitle").innerText = t.downloadTitle;
     document.getElementById("downloadSub").innerText = t.downloadSub;
     document.getElementById("downloadBtn").innerText = t.downloadBtn;
-    document.getElementById("versionDisplay").innerText = t.version;
+    const versionEl = document.getElementById('versionDisplay');
+    const versionNumber = versionEl.dataset.version || '';
+    versionEl.textContent = t.version + versionNumber;
 
     document.querySelectorAll("[data-key]").forEach(el => {
         el.innerText = t[el.dataset.key];
@@ -441,6 +443,7 @@ fetch('version.json?_=' + Date.now())
     .then(data => {
         const versionEl = document.getElementById('versionDisplay');
         if (data.version) {
+            versionEl.dataset.version = data.version; // сохраняем номер
             const lang = document.documentElement.lang || 'ru';
             const prefix = translations[lang]?.version || 'Версия ';
             versionEl.textContent = prefix + data.version;
