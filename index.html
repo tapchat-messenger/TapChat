@@ -440,7 +440,7 @@ fetch('version.json?_=' + Date.now())
     .then(data => {
         const versionEl = document.getElementById('versionDisplay');
         if (data.version) {
-            versionEl.textContent = getElementById('downloadBtn') + data.version;
+            versionEl.textContent = <p id="version"></p> + data.version;
         }
         const downloadBtn = document.getElementById('downloadBtn');
         if (data.url) {
