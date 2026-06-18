@@ -273,7 +273,8 @@ const translations = {
         sec4: "Приватность",
         downloadTitle: "Скачать",
         downloadSub: "Доступно на Android",
-        downloadBtn: "Скачать APK"
+        downloadBtn: "Скачать APK",
+        version: "Версия "
     },
     en: {
         subtitle: "Easier than it sounds.",
@@ -286,7 +287,8 @@ const translations = {
         sec4: "Privacy",
         downloadTitle: "Download",
         downloadSub: "Available on Android",
-        downloadBtn: "Download APK"
+        downloadBtn: "Download APK",
+        version: "Version "
     }
 };
 
@@ -438,7 +440,7 @@ fetch('version.json?_=' + Date.now())
     .then(data => {
         const versionEl = document.getElementById('versionDisplay');
         if (data.version) {
-            versionEl.textContent = 'Версия ' + data.version;
+            versionEl.textContent = getElementById('downloadBtn') + data.version;
         }
         const downloadBtn = document.getElementById('downloadBtn');
         if (data.url) {
