@@ -1,6 +1,6 @@
 {
-  "version": "1.0.3",
-  "url": "https://github.com/tapchat-messenger/TapChat/releases/download/release/TapChat-1.0.2-release.apk",
-  "description": "",
-  "descriptionEn": ""
+  "version": "1.1.2",
+  "url": "https://github.com/tapchat-messenger/TapChat/releases/download/1.1.2/TapChat-1.1.2-release.apk",
+  "description": "Добавлена загрузка и установка обновлений, исправление ошибок",
+  "descriptionEn": "Added update download and installation, bug fixes"
 }
