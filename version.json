@@ -1,6 +1,6 @@
 {
-  "version": "1.1.6",
-  "url": "https://github.com/tapchat-messenger/TapChat/releases/download/1.1.6/TapChat-1.1.6-release.apk",
-  "description": "",
-  "descriptionEn": ""
+  "version": "1.2.6",
+  "url": "https://github.com/tapchat-messenger/TapChat/releases/download/1.2.6/TapChat-1.2.6-release.apk",
+  "description": "Добавлена возможность отправлять файлы, другие изменения и исправления.",
+  "descriptionEn": "Added file sending capability, other changes and fixes."
 }
