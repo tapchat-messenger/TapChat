@@ -1,478 +1,1067 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f4f1ec">
+
 <title>TapChat</title>
 
-<link rel="icon" type="image/png" href="favicon.png">
+<link
+  rel="icon"
+  href="favicon-dark.png"
+  media="(prefers-color-scheme: light)"
+>
+
+<link
+  rel="icon"
+  href="favicon-light.png"
+  media="(prefers-color-scheme: dark)"
+>
+
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@materialwebunofficial/md3e-web/dist/tokens.min.css"
+>
+
+<script
+    type="module"
+    src="https://cdn.jsdelivr.net/npm/@materialwebunofficial/md3e-web/dist/md3-expressive.esm.js">
+</script>
 
 <style>
+:root {
+    color-scheme: light;
+
+    --page-bg: var(--md-sys-color-background, #F9F7FF);
+    --page-fg: var(--md-sys-color-on-background, #1A1B20);
+    --muted: var(--md-sys-color-on-surface-variant, #45464F);
+    --surface: var(--md-sys-color-surface-container, #EDEDF5);
+    --line: var(--md-sys-color-outline-variant, #C5C6D0);
+    --shadow: 0 18px 60px rgba(40, 43, 60, .08);
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --page-bg: var(--md-sys-color-background, #111318);
+    --page-fg: var(--md-sys-color-on-background, #E2E2E9);
+    --muted: var(--md-sys-color-on-surface-variant, #C5C6D0);
+    --surface: var(--md-sys-color-surface-container, #1D1F26);
+    --line: var(--md-sys-color-outline-variant, #45464F);
+    --shadow: 0 18px 60px rgba(0, 0, 0, .24);
+}
+
 * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
 }
 
 html {
+    height: 100%;
     scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+    background: #F9F7FF;
 }
 
 body {
-    background: #0a0a0a;
-    color: white;
-}
-
-.bg {
-    position: fixed;
-    width: 100%;
+    margin: 0;
     height: 100%;
-    z-index: -3;
-    background: #0a0a0a;
+    overflow-x: hidden;
+    background: var(--page-bg);
+    color: var(--page-fg);
+    font-family: Arial, sans-serif;
+    transition: background .35s, color .35s;
+    opacity: 0;
+    visibility: hidden;
 }
 
+body.theme-ready {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity .18s ease;
+}
 
-.bg::before,
-.bg::after {
+md-expressive-theme {
+    display: contents;
+}
+
+#scroller {
+    height: 100svh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior-y: contain;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+}
+
+#scroller::-webkit-scrollbar {
+    display: none;
+}
+
+.page-section {
+    min-height: 100svh;
+    height: 100svh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    display: grid;
+    place-items: center;
+    padding: 88px clamp(20px, 6vw, 88px) 42px;
+    position: relative;
+    isolation: isolate;
+}
+
+.page-section::before {
     content: "";
     position: absolute;
-    width: 600px;
-    height: 600px;
-    border-radius: 50%;
-    filter: blur(120px);
-    opacity: 0.4;
-    animation: moveLight 3s infinite alternate ease-in-out;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(
+        ellipse at 50% 45%,
+        color-mix(
+            in srgb,
+            var(--md-sys-color-primary, #526A92) 8%,
+            transparent
+        ),
+        transparent 65%
+    );
+    opacity: .8;
 }
 
-.bg::before {
-    background: #2563eb;
-    top: 10%;
-    left: 10%;
-}
-
-.bg::after {
-    background: #1e3a8a;
-    bottom: 10%;
-    right: 10%;
-    animation-delay: 3s;
-}
-
-@keyframes moveLight {
-    0% { transform: translate(0,0) scale(1); }
-    100% { transform: translate(100px, -80px) scale(1.2); }
-}
-
-
-#particles {
+.topbar {
     position: fixed;
+    z-index: 20;
+    top: 16px;
+    right: clamp(16px, 4vw, 48px);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    backdrop-filter: blur(18px);
+    box-shadow: var(--shadow);
+}
+
+.topbar md-button {
+    --md-sys-typescale-label-large-size: 13px;
+}
+
+.section-inner {
+    width: min(1040px, 100%);
+    max-height: 100%;
+    overflow: visible;
+    text-align: center;
+
+    opacity: 1;
+    transform: translateY(0) scale(1);
+
+    transition:
+        opacity .55s ease,
+        transform .7s cubic-bezier(.2, .8, .2, 1);
+}
+
+.page-section.active .section-inner {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.brand-mark {
+    width: clamp(160px, 26vw, 280px);
+    height: clamp(160px, 26vw, 280px);
+    margin: 0 auto 18px;
+    display: grid;
+    place-items: center;
+}
+
+.brand-mark img {
+    display: block;
     width: 100%;
     height: 100%;
-    z-index: -2;
-    top: 0;
-    left: 0;
-    filter: blur(1px);
+    object-fit: contain;
 }
 
-
-.lang {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 10;
-}
-
-.lang button {
-    margin-left: 5px;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 10px;
-    background: #222;
-    color: white;
-    cursor: pointer;
-}
-
-
-.hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    text-align: center;
-}
-
-.logo {
-    width: 250px;
-    animation: logoIn 1.2s ease;
-}
-
-@keyframes logoIn {
-    from { opacity: 0; transform: scale(0.7); }
-    to { opacity: 1; transform: scale(1); }
+.brand-fallback {
+    width: 100%;
+    height: 100%;
 }
 
 h1 {
-    font-size: 42px;
-    margin-top: 16px;
+    font-size: clamp(42px, 7vw, 76px);
+    letter-spacing: -.055em;
+    margin: 0;
+    font-weight: 700;
 }
 
 .subtitle {
-    opacity: 0.7;
-    margin-top: 8px;
+    color: var(--muted);
+    font-size: clamp(17px, 2.4vw, 23px);
+    margin: 14px 0 0;
 }
 
-
-.section {
-    padding: 80px 20px;
-    max-width: 900px;
-    margin: auto;
+.eyebrow {
+    color: var(--md-sys-color-primary, #526A92);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    font-size: 12px;
+    margin: 0 0 12px;
 }
 
-.section h2 {
-    margin-bottom: 20px;
+h2 {
+    font-size: clamp(30px, 4.5vw, 50px);
+    line-height: 1.08;
+    letter-spacing: -.04em;
+    margin: 0 0 20px;
 }
 
-
-.glass {
-    background: rgba(255,255,255,0.06);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border-radius: 20px;
-    padding: 20px;
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 0 20px rgba(37,99,235,0.15);
+.copy {
+    color: var(--muted);
+    font-size: clamp(16px, 1.7vw, 19px);
+    line-height: 1.75;
+    max-width: 760px;
+    margin: 0 auto;
 }
 
+.hero-actions {
+    margin-top: 28px;
+}
 
-.cards {
+.feature-grid {
     display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
     margin-top: 20px;
+    text-align: left;
 }
 
-
-.fade {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: 0.8s;
+md-card.feature {
+    display: block;
+    min-height: 150px;
+    padding: 24px;
+    border-radius: 28px;
+    border: 1px solid var(--line);
+    color: var(--page-fg);
+    background: var(--surface);
+    box-shadow: 0 0 0 transparent;
+    transition:
+        box-shadow .4s ease,
+        transform .25s ease,
+        background .3s ease;
 }
 
-.fade.show {
-    opacity: 1;
-    transform: translateY(0);
+md-card.feature:hover {
+    box-shadow: 0 12px 32px rgba(0, 0, 0, .16);
+    transform: translateY(-4px);
 }
 
+.feature-icon {
+    width: 34px;
+    height: 34px;
+    margin-bottom: 18px;
+    display: grid;
+    place-items: center;
+    color: var(--md-sys-color-primary, #526A92);
+    transform: translateY(10px);
+}
+
+.feature-icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.feature h3 {
+    font-size: 19px;
+    margin: 0 0 8px;
+}
+
+.feature p {
+    color: var(--muted);
+    line-height: 1.55;
+    margin: 0;
+}
+
+.download-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.download-version {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 12px 0 24px;
+}
+
+.download-note {
+    color: var(--muted);
+    margin: 0;
+}
 
 .footer {
-    text-align: center;
-    padding: 30px;
-    opacity: 0.5;
+    position: absolute;
+    bottom: 18px;
+    color: var(--muted);
+    font-size: 12px;
 }
 
+@media (max-width: 650px) {
+    .page-section {
+        padding: 82px 20px 50px;
+    }
 
-@media (max-width: 600px) {
-    h1 { font-size: 32px; }
-}
+    .brand-mark {
+        width: clamp(150px, 42vw, 220px);
+        height: clamp(150px, 42vw, 220px);
+    }
 
+    .feature-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 18px;
+    }
 
-@media (min-width: 768px) {
-    .cards {
-        grid-template-columns: repeat(2, 1fr);
+    md-card.feature {
+        min-height: 0;
+        padding: 17px 19px;
+    }
+
+    .feature-icon {
+        display: none;
+    }
+
+    .feature h3 {
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+    .feature p {
+        font-size: 14px;
+    }
+
+    .section-inner.features-inner {
+        max-width: 490px;
     }
 }
 
+@media (max-height: 650px) {
+    .page-section {
+        padding-top: 66px;
+        padding-bottom: 40px;
+    }
 
-.button {
-    margin-top: 24px;
-    padding: 14px 32px;
-    border-radius: 40px;
-    background: linear-gradient(135deg, #2563eb, #3b82f6);
-    text-decoration: none;
-    color: white;
-    font-weight: bold;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    min-width: 200px;
-    transition: 0.3s;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-}
+    .brand-mark {
+        width: 130px;
+        height: 130px;
+        margin-bottom: 8px;
+    }
 
-.button:hover {
-    transform: scale(1.05);
-}
+    .feature-grid {
+        gap: 8px;
+        margin-top: 12px;
+    }
 
-.version {
-    font-size: 14px;
-    opacity: 0.6;
-    margin-top: 4px;
-}
-@media (max-width: 768px) {
-    #particles {
+    md-card.feature {
+        padding: 13px 16px;
+        min-height: 0;
+    }
+
+    .feature-icon {
         display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
     }
 }
 </style>
 </head>
 
 <body>
+<md-expressive-theme
+    id="m3eTheme"
+    global
+    primary-seed="#526A92"
+    color-mode="light"
+    palette-variant="tonal-spot">
+</md-expressive-theme>
 
-<div class="bg"></div>
-<canvas id="particles"></canvas>
+<header class="topbar" aria-label="Site controls">
+    <md-button
+        id="langRu"
+        variant="tonal"
+        label="RU">
+    </md-button>
 
-<div class="lang">
-    <button onclick="setLang('ru')">RU</button>
-    <button onclick="setLang('en')">EN</button>
-</div>
+    <md-button
+        id="langEn"
+        variant="text"
+        label="EN">
+    </md-button>
 
-<div class="hero">
-    <img src="logo.png" class="logo">
-    <h1>TapChat</h1>
-    <p id="subtitle" class="subtitle"></p>
-</div>
+    <md-button
+        id="themeToggle"
+        variant="tonal"
+        icon="dark_mode"
+        label="Тёмная тема">
+    </md-button>
+</header>
 
-<!-- Что такое TapChat? -->
-<div class="section fade" id="about">
-    <h2 id="aboutTitle"></h2>
-    <div class="glass" style="padding:24px; text-align:left; line-height:1.6;">
-        <p id="aboutDesc"></p>
-    </div>
-</div>
+<main id="scroller" aria-label="TapChat">
+    <section
+        class="page-section active"
+        data-page="0"
+        aria-label="TapChat">
 
-<!-- Почему TapChat? -->
-<div class="section fade">
-    <h2 id="why"></h2>
-    <div class="cards">
-        <div class="glass"><h3 data-key="sec1"></h3></div>
-        <div class="glass"><h3 data-key="sec2"></h3></div>
-        <div class="glass"><h3 data-key="sec3"></h3></div>
-        <div class="glass"><h3 data-key="sec4"></h3></div>
-    </div>
-</div>
+        <div class="section-inner">
+            <div class="brand-mark">
+                <img
+                    src="logo.png"
+                    alt="TapChat"
+                    onerror="this.hidden=true;this.nextElementSibling.hidden=false">
 
-<!-- Скачать -->
-<div class="section fade" id="download">
-    <h2 id="downloadTitle"></h2>
-    <p id="downloadSub" style="opacity:0.7;"></p>
-    <div id="versionDisplay" class="version"></div>
-    <a href="#" class="button" id="downloadBtn"></a>
-</div>
+                <svg
+                    class="brand-fallback"
+                    hidden
+                    viewBox="0 0 200 200"
+                    role="img"
+                    aria-label="TapChat logo">
 
-<div class="footer">© 2026 TapChat</div>
+                    <path
+                        d="M100 16c-36 0-65 29-65 65v38c0 28 22 50 50 50h10l25 19v-22c27-8 46-33 46-62V81c0-36-29-65-66-65Z"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="9"
+                        stroke-linejoin="round"/>
 
-<script>
+                    <path
+                        d="M78 78v41m22-55v60m22-49v39"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="11"
+                        stroke-linecap="round"/>
+                </svg>
+            </div>
 
+            <h1>TapChat</h1>
+
+            <p
+                id="subtitle"
+                class="subtitle">
+                Проще, чем кажется.
+            </p>
+
+            <div class="hero-actions">
+                <md-button
+                    id="heroNext"
+                    variant="filled"
+                    icon="arrow_downward"
+                    label="Узнать больше">
+                </md-button>
+            </div>
+        </div>
+    </section>
+
+    <section
+        class="page-section"
+        data-page="1"
+        aria-label="About TapChat">
+
+        <div class="section-inner">
+            <p
+                class="eyebrow"
+                id="aboutEyebrow">
+                О проекте
+            </p>
+
+            <h2 id="aboutTitle">
+                Что такое TapChat?
+            </h2>
+
+            <p
+                id="aboutDesc"
+                class="copy">
+            </p>
+
+            <div class="hero-actions">
+                <md-button
+                    class="next-page"
+                    data-next="2"
+                    variant="outlined"
+                    icon="arrow_downward"
+                    label="Преимущества">
+                </md-button>
+            </div>
+        </div>
+    </section>
+
+    <section
+        class="page-section"
+        data-page="2"
+        aria-label="Features">
+
+        <div class="section-inner features-inner">
+            <p
+                class="eyebrow"
+                id="featuresEyebrow">
+                Особенности
+            </p>
+
+            <h2 id="why">
+                Почему TapChat?
+            </h2>
+
+            <div class="feature-grid">
+                <md-card class="feature">
+                    <div
+                        class="feature-icon"
+                        aria-hidden="true">
+
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 3 20 6v5c0 5.2-3.4 8.7-8 10-4.6-1.3-8-4.8-8-10V6l8-3Z"/>
+                            <path d="m8.5 12 2.2 2.2 4.8-4.8"/>
+                        </svg>
+                    </div>
+
+                    <h3 data-key="sec1"></h3>
+                    <p data-key="sec1desc"></p>
+                </md-card>
+
+                <md-card class="feature">
+                    <div
+                        class="feature-icon"
+                        aria-hidden="true">
+
+                        <svg viewBox="0 0 24 24">
+                            <rect x="9" y="3" width="6" height="5" rx="1"/>
+                            <rect x="3" y="16" width="6" height="5" rx="1"/>
+                            <rect x="15" y="16" width="6" height="5" rx="1"/>
+                            <path d="M12 8v4"/>
+                            <path d="M6 16v-2h12v2"/>
+                        </svg>
+                    </div>
+
+                    <h3 data-key="sec2"></h3>
+                    <p data-key="sec2desc"></p>
+                </md-card>
+
+                <md-card class="feature">
+                    <div
+                        class="feature-icon"
+                        aria-hidden="true">
+
+                        <div class="feature-icon" aria-hidden="true">
+    			<svg viewBox="0 0 24 24">
+        		<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v7a2.5 2.5 0 0 1-2.5 2.5H12l-4.5 4v-4h-1A2.5 2.5 0 0 1 4 12.5v-7Z"/>
+    			</svg>
+			</div>
+                    </div>
+
+                    <h3 data-key="sec3"></h3>
+                    <p data-key="sec3desc"></p>
+                </md-card>
+
+                <md-card class="feature">
+                    <div
+                        class="feature-icon"
+                        aria-hidden="true">
+
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 3v12"/>
+                            <path d="m7 10 5 5 5-5"/>
+                            <path d="M5 20h14"/>
+                        </svg>
+                    </div>
+
+                    <h3 data-key="sec4"></h3>
+                    <p data-key="sec4desc"></p>
+                </md-card>
+            </div>
+
+            <div class="hero-actions">
+                <md-button
+                    class="next-page"
+                    data-next="3"
+                    variant="outlined"
+                    icon="arrow_downward"
+                    label="К загрузке">
+                </md-button>
+            </div>
+        </div>
+    </section>
+
+    <section
+        class="page-section"
+        data-page="3"
+        aria-label="Download TapChat">
+
+        <div class="section-inner">
+            <p
+                class="eyebrow"
+                id="downloadEyebrow">
+                Начать общение
+            </p>
+
+            <h2 id="downloadTitle">
+                Скачать TapChat
+            </h2>
+
+            <p
+                id="downloadSub"
+                class="download-note">
+                Доступно на Android
+            </p>
+
+            <div
+                id="versionDisplay"
+                class="download-version">
+            </div>
+
+            <div class="download-actions">
+                <md-button
+                    id="downloadBtn"
+                    variant="filled"
+                    icon="download"
+                    label="Скачать APK">
+                </md-button>
+
+                <md-button
+                    id="backToStart"
+                    variant="outlined"
+                    icon="arrow_upward"
+                    label="В начало">
+                </md-button>
+            </div>
+        </div>
+
+        <div class="footer">
+            © 2026 TapChat
+        </div>
+    </section>
+</main>
+
+<script type="module">
 const translations = {
     ru: {
-        subtitle: "Проще, чем кажется.",
-        aboutTitle: "Что такое TapChat?",
-        aboutDesc: "TapChat — мессенджер для локальных сетей. Общайтесь с теми, кто рядом — без интернета. Отправляйте сообщения, фото и видео, настраивайте профиль и пользуйтесь тёмной темой. Всё просто: добавьте собеседника по IP-адресу и начинайте общение.",
-        why: "Почему TapChat?",
-        sec1: "Полная безопасность",
-        sec2: "Децентрализация",
-        sec3: "Высокая скорость",
-        sec4: "Простота использования",
-        downloadTitle: "Скачать",
-        downloadSub: "Доступно на Android",
-        downloadBtn: "Скачать APK",
-        version: "Версия "
+        subtitle: 'Проще, чем кажется.',
+        aboutEyebrow: 'О проекте',
+        aboutTitle: 'Что такое TapChat?',
+        aboutDesc: 'TapChat — мессенджер для локальных сетей. Общайтесь с теми, кто рядом — без интернета. Отправляйте сообщения, фото и видео, настраивайте профиль и пользуйтесь тёмной темой. Добавьте собеседника по IP-адресу и начинайте общение.',
+        featuresEyebrow: 'Особенности',
+        why: 'Почему TapChat?',
+        sec1: 'Безопасность',
+        sec1desc: 'Общение в локальной сети без обязательного подключения к интернету.',
+        sec2: 'Локальная сеть',
+        sec2desc: 'Связь с устройствами рядом — без центрального сервера.',
+        sec3: 'Быстрое общение',
+        sec3desc: 'Отправляйте сообщения и медиа по локальной сети.',
+        sec4: 'Просто начать',
+        sec4desc: 'Добавьте собеседника по IP-адресу и общайтесь.',
+        downloadEyebrow: 'Начать общение',
+        downloadTitle: 'Скачать TapChat',
+        downloadSub: 'Доступно на Android',
+        downloadBtn: 'Скачать APK',
+        version: 'Версия ',
+        next: 'Узнать больше',
+        featuresNext: 'Особенности',
+        downloadNext: 'К загрузкам',
+        dark: 'Тёмная тема',
+        light: 'Светлая тема',
+        backToStart: 'В начало'
     },
+
     en: {
-        subtitle: "Easier than it sounds.",
-        aboutTitle: "What is TapChat?",
-        aboutDesc: "TapChat is a local network messenger. Chat with people nearby — no internet needed. Send messages, photos and videos, customize your profile and enjoy dark theme. Just add a contact by IP address and start chatting.",
-        why: "Why TapChat?",
-        sec1: "Full security",
-        sec2: "Decentralization",
-        sec3: "High speed",
-        sec4: "Ease of use",
-        downloadTitle: "Download",
-        downloadSub: "Available on Android",
-        downloadBtn: "Download APK",
-        version: "Version "
+        subtitle: 'Easier than it sounds.',
+        aboutEyebrow: 'About the project',
+        aboutTitle: 'What is TapChat?',
+        aboutDesc: 'TapChat is a local network messenger. Chat with people nearby — no internet required. Send messages, photos and videos, customize your profile, and use dark theme. Add a contact by IP address and start chatting.',
+        featuresEyebrow: 'Features',
+        why: 'Why TapChat?',
+        sec1: 'Privacy-minded',
+        sec1desc: 'Chat on a local network without requiring an internet connection.',
+        sec2: 'Local network',
+        sec2desc: 'Connect with nearby devices without a central server.',
+        sec3: 'Fast messaging',
+        sec3desc: 'Send messages and media over your local network.',
+        sec4: 'Easy to start',
+        sec4desc: 'Add a contact by IP address and start chatting.',
+        downloadEyebrow: 'Start chatting',
+        downloadTitle: 'Download TapChat',
+        downloadSub: 'Available on Android',
+        downloadBtn: 'Download APK',
+        version: 'Version ',
+        next: 'Discover more',
+        featuresNext: 'Features',
+        downloadNext: 'Download',
+        dark: 'Dark theme',
+        light: 'Light theme',
+        backToStart: 'Back to start'
     }
 };
 
-function setLang(lang) {
+let lang = localStorage.getItem('tapchat-lang') || 'ru';
+let dark = localStorage.getItem('tapchat-theme') === 'dark';
+
+const root = document.documentElement;
+const themeEl = document.getElementById('m3eTheme');
+const scroller = document.getElementById('scroller');
+const sections = [
+    ...document.querySelectorAll('.page-section')
+];
+
+let current = 0;
+let locked = false;
+let version = '';
+
+function setTheme() {
+    root.dataset.theme = dark ? 'dark' : 'light';
+
+    themeEl.setAttribute(
+        'color-mode',
+        dark ? 'dark' : 'light'
+    );
+
+    document
+        .getElementById('themeToggle')
+        .setAttribute(
+            'label',
+            dark
+                ? translations[lang].light
+                : translations[lang].dark
+        );
+
+    document
+        .getElementById('themeToggle')
+        .setAttribute(
+            'icon',
+            dark ? 'light_mode' : 'dark_mode'
+        );
+
+    localStorage.setItem(
+        'tapchat-theme',
+        dark ? 'dark' : 'light'
+    );
+}
+
+function updateVersion() {
+    document.getElementById('versionDisplay').textContent =
+        version
+            ? translations[lang].version + version
+            : '';
+}
+
+function setLang(next) {
+    lang = next;
+
+    localStorage.setItem('tapchat-lang', lang);
+    document.documentElement.lang = lang;
+
     const t = translations[lang];
-    document.getElementById("subtitle").innerText = t.subtitle;
-    document.getElementById("aboutTitle").innerText = t.aboutTitle;
-    document.getElementById("aboutDesc").innerText = t.aboutDesc;
-    document.getElementById("why").innerText = t.why;
-    document.getElementById("downloadTitle").innerText = t.downloadTitle;
-    document.getElementById("downloadSub").innerText = t.downloadSub;
-    document.getElementById("downloadBtn").innerText = t.downloadBtn;
-    const versionEl = document.getElementById('versionDisplay');
-    const versionNumber = versionEl.dataset.version || '';
-    versionEl.textContent = t.version + versionNumber;
 
-    document.querySelectorAll("[data-key]").forEach(el => {
-        el.innerText = t[el.dataset.key];
-    });
-}
+    const textIds = [
+        'subtitle',
+        'aboutEyebrow',
+        'aboutTitle',
+        'aboutDesc',
+        'featuresEyebrow',
+        'why',
+        'downloadEyebrow',
+        'downloadTitle',
+        'downloadSub'
+    ];
 
-setLang('ru');
+    for (const id of textIds) {
+        const element = document.getElementById(id);
 
-
-const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-        if (e.isIntersecting) e.target.classList.add("show");
-    });
-});
-document.querySelectorAll(".fade").forEach(el => observer.observe(el));
-
-const canvas = document.getElementById("particles");
-const ctx = canvas.getContext("2d");
-
-let particles = [];
-let mouse = { x: null, y: null };
-
-function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener("resize", resize);
-
-window.addEventListener("mousemove", (e) => {
-    mouse.x = e.x;
-    mouse.y = e.y;
-});
-
-function createParticles() {
-    particles = [];
-    for (let i = 0; i < 70; i++) {
-        particles.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            size: Math.random() * 2 + 1,
-            vx: (Math.random() - 0.5) * 0.4,
-            vy: (Math.random() - 0.5) * 0.4
-        });
-    }
-}
-
-function drawParticles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const ATTRACTION_RADIUS = 150;
-    const ATTRACTION_STRENGTH = 0.02;
-    const MAX_SPEED = 1.5;
-
-    if (mouse.x !== null && mouse.y !== null) {
-        particles.forEach(p => {
-            const dx = mouse.x - p.x;
-            const dy = mouse.y - p.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < ATTRACTION_RADIUS && dist > 0.5) {
-                const dirX = dx / dist;
-                const dirY = dy / dist;
-                const force = (1 - dist / ATTRACTION_RADIUS) * ATTRACTION_STRENGTH;
-                p.vx += dirX * force;
-                p.vy += dirY * force;
-                p.vx *= 0.98;
-                p.vy *= 0.98;
-                const spd = Math.hypot(p.vx, p.vy);
-                if (spd > MAX_SPEED) {
-                    p.vx = (p.vx / spd) * MAX_SPEED;
-                    p.vy = (p.vy / spd) * MAX_SPEED;
-                }
-            }
-        });
-    }
-
-    particles.forEach(p => {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.x < 0) p.x = canvas.width;
-        if (p.y > canvas.height) p.y = 0;
-        if (p.y < 0) p.y = canvas.height;
-    });
-
-    particles.forEach(p => {
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = "rgba(255,255,255,0.8)";
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(255,255,255,0.8)";
-        ctx.fill();
-    });
-    ctx.shadowBlur = 0;
-
-    for (let a = 0; a < particles.length; a++) {
-        for (let b = a + 1; b < particles.length; b++) {
-            let dx = particles[a].x - particles[b].x;
-            let dy = particles[a].y - particles[b].y;
-            let dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 120) {
-                ctx.strokeStyle = "rgba(255,255,255," + (1 - dist/120) * 0.4 + ")";
-                ctx.beginPath();
-                ctx.moveTo(particles[a].x, particles[a].y);
-                ctx.lineTo(particles[b].x, particles[b].y);
-                ctx.stroke();
-            }
+        if (element) {
+            element.textContent = t[id];
         }
     }
 
-    if (mouse.x !== null && mouse.y !== null) {
-        particles.forEach(p => {
-            let dx = p.x - mouse.x;
-            let dy = p.y - mouse.y;
-            let dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 150) {
-                const opacity = (1 - dist / 150) * 0.6;
-                ctx.strokeStyle = `rgba(37, 99, 235, ${opacity})`;
-                ctx.beginPath();
-                ctx.moveTo(p.x, p.y);
-                ctx.lineTo(mouse.x, mouse.y);
-                ctx.stroke();
-            }
+    document
+        .querySelectorAll('[data-key]')
+        .forEach(element => {
+            element.textContent = t[element.dataset.key];
         });
+
+    const labels = [
+        ['#heroNext', 'next'],
+        ['[data-next="2"]', 'featuresNext'],
+        ['[data-next="3"]', 'downloadNext'],
+        ['#downloadBtn', 'downloadBtn'],
+        ['#backToStart', 'backToStart']
+    ];
+
+    for (const [selector, key] of labels) {
+        document
+            .querySelector(selector)
+            ?.setAttribute('label', t[key]);
     }
 
-    requestAnimationFrame(drawParticles);
+    document
+        .getElementById('langRu')
+        .setAttribute(
+            'variant',
+            lang === 'ru' ? 'filled' : 'text'
+        );
+
+    document
+        .getElementById('langEn')
+        .setAttribute(
+            'variant',
+            lang === 'en' ? 'filled' : 'text'
+        );
+
+    setTheme();
+    updateVersion();
 }
 
-createParticles();
-drawParticles();
+function goTo(index, force = false) {
+    const next = Math.max(
+        0,
+        Math.min(sections.length - 1, index)
+    );
+
+    if (!force && (next === current || locked)) {
+        return;
+    }
+
+    locked = true;
+    current = next;
+
+    sections.forEach((section, index) => {
+        section.classList.toggle(
+            'active',
+            index === current
+        );
+    });
+
+    scroller.scrollTo({
+        top: sections[next].offsetTop,
+        behavior: window.matchMedia(
+            '(prefers-reduced-motion: reduce)'
+        ).matches
+            ? 'auto'
+            : 'smooth'
+    });
+
+    window.setTimeout(() => {
+        locked = false;
+    }, 850);
+}
+
+document
+    .getElementById('langRu')
+    .addEventListener('click', () => {
+        setLang('ru');
+    });
+
+document
+    .getElementById('langEn')
+    .addEventListener('click', () => {
+        setLang('en');
+    });
+
+document
+    .getElementById('themeToggle')
+    .addEventListener('click', () => {
+        dark = !dark;
+        setTheme();
+    });
+
+scroller.addEventListener(
+    'wheel',
+    event => {
+        event.preventDefault();
+
+        if (locked) {
+            return;
+        }
+
+        const delta =
+            Math.abs(event.deltaY) > Math.abs(event.deltaX)
+                ? event.deltaY
+                : event.deltaX;
+
+        if (Math.abs(delta) < 12) {
+            return;
+        }
+
+        goTo(
+            current + (delta > 0 ? 1 : -1)
+        );
+    },
+    {
+        passive: false
+    }
+);
+
+let touchStartY = null;
+
+scroller.addEventListener(
+    'touchstart',
+    event => {
+        touchStartY = event.touches[0].clientY;
+    },
+    {
+        passive: true
+    }
+);
+
+scroller.addEventListener(
+    'touchend',
+    event => {
+        if (touchStartY === null) {
+            return;
+        }
+
+        const delta =
+            touchStartY -
+            event.changedTouches[0].clientY;
+
+        if (Math.abs(delta) > 45) {
+            goTo(
+                current + (delta > 0 ? 1 : -1)
+            );
+        }
+
+        touchStartY = null;
+    },
+    {
+        passive: true
+    }
+);
+
+window.addEventListener('keydown', event => {
+    if (
+        ['ArrowDown', 'PageDown', ' ']
+            .includes(event.key)
+    ) {
+        event.preventDefault();
+        goTo(current + 1);
+    }
+
+    if (
+        ['ArrowUp', 'PageUp']
+            .includes(event.key)
+    ) {
+        event.preventDefault();
+        goTo(current - 1);
+    }
+
+    if (event.key === 'Home') {
+        event.preventDefault();
+        goTo(0);
+    }
+
+    if (event.key === 'End') {
+        event.preventDefault();
+        goTo(sections.length - 1);
+    }
+});
+
+document
+    .getElementById('heroNext')
+    .addEventListener('click', () => {
+        goTo(1);
+    });
+
+document
+    .querySelectorAll('.next-page')
+    .forEach(element => {
+        element.addEventListener('click', () => {
+            goTo(
+                Number(element.dataset.next)
+            );
+        });
+    });
+
+document
+    .getElementById('backToStart')
+    .addEventListener('click', () => {
+        current = 0;
+        locked = true;
+
+        scroller.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+
+        window.setTimeout(() => {
+            locked = false;
+        }, 850);
+    });
 
 fetch('version.json?_=' + Date.now())
-    .then(res => {
-        if (!res.ok) throw new Error('HTTP error ' + res.status);
-        return res.json();
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(response.status);
+        }
+
+        return response.json();
     })
     .then(data => {
-        const versionEl = document.getElementById('versionDisplay');
-        if (data.version) {
-            versionEl.dataset.version = data.version; // сохраняем номер
-            const lang = document.documentElement.lang || 'ru';
-            const prefix = translations[lang]?.version || 'Версия ';
-            versionEl.textContent = prefix + data.version;
-        }
-        const downloadBtn = document.getElementById('downloadBtn');
+        version = data.version || '';
+        updateVersion();
+
         if (data.url) {
-            downloadBtn.href = data.url;
+            document
+                .getElementById('downloadBtn')
+                .addEventListener('click', () => {
+                    const link = document.createElement('a');
+
+                    link.href = data.url;
+                    link.download =
+                        data.url.split('/').pop()
+                        || 'TapChat.apk';
+
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                });
         }
     })
     .catch(() => {
-        console.warn('version.json not loaded');
+        console.info(
+            'version.json unavailable; add it beside index.html'
+        );
     });
-document.getElementById('downloadBtn').addEventListener('click', function(e) {
-    e.preventDefault();
-    const url = this.href;
-    if (url && url !== '#') {
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = url.split('/').pop() || 'TapChat.apk';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-});</script>
 
+setLang(lang);
+
+function showPageAfterM3ELoaded() {
+    document.body.classList.add('theme-ready');
+}
+
+customElements
+    .whenDefined('md-expressive-theme')
+    .then(() => {
+        requestAnimationFrame(() => {
+            requestAnimationFrame(
+                showPageAfterM3ELoaded
+            );
+        });
+    })
+    .catch(showPageAfterM3ELoaded);
+
+setTimeout(
+    showPageAfterM3ELoaded,
+    3000
+);
+</script>
 </body>
 </html>
