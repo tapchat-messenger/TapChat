@@ -8,22 +8,20 @@
 <title>TapChat</title>
 
 <link
-  rel="icon"
-  href="favicon-dark.png"
-  media="(prefers-color-scheme: light)"
+    rel="icon"
+    href="favicon-dark.png"
+    media="(prefers-color-scheme: light)"
 >
-
 <link
-  rel="icon"
-  href="favicon-light.png"
-  media="(prefers-color-scheme: dark)"
+    rel="icon"
+    href="favicon-light.png"
+    media="(prefers-color-scheme: dark)"
 >
 
 <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/@materialwebunofficial/md3e-web/dist/tokens.min.css"
 >
-
 <script
     type="module"
     src="https://cdn.jsdelivr.net/npm/@materialwebunofficial/md3e-web/dist/md3-expressive.esm.js">
@@ -32,7 +30,6 @@
 <style>
 :root {
     color-scheme: light;
-
     --page-bg: var(--md-sys-color-background, #F9F7FF);
     --page-fg: var(--md-sys-color-on-background, #1A1B20);
     --muted: var(--md-sys-color-on-surface-variant, #45464F);
@@ -43,7 +40,6 @@
 
 :root[data-theme="dark"] {
     color-scheme: dark;
-
     --page-bg: var(--md-sys-color-background, #111318);
     --page-fg: var(--md-sys-color-on-background, #E2E2E9);
     --muted: var(--md-sys-color-on-surface-variant, #C5C6D0);
@@ -58,15 +54,13 @@
 
 html {
     height: 100%;
-    scroll-behavior: smooth;
-    scroll-snap-type: y mandatory;
     background: #F9F7FF;
 }
 
 body {
     margin: 0;
     height: 100%;
-    overflow-x: hidden;
+    overflow: hidden;
     background: var(--page-bg);
     color: var(--page-fg);
     font-family: Arial, sans-serif;
@@ -86,6 +80,7 @@ md-expressive-theme {
 }
 
 #scroller {
+    height: 100vh;
     height: 100svh;
     overflow-y: auto;
     overflow-x: hidden;
@@ -99,15 +94,30 @@ md-expressive-theme {
 }
 
 .page-section {
-    min-height: 100svh;
-    height: 100svh;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-    display: grid;
-    place-items: center;
-    padding: 88px clamp(20px, 6vw, 88px) 42px;
     position: relative;
     isolation: isolate;
+    display: grid;
+    place-items: safe center;
+
+    width: 100%;
+    height: 100vh;
+    height: 100svh;
+    min-height: 100vh;
+    min-height: 100svh;
+
+    padding: 88px clamp(20px, 6vw, 88px) 42px;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scrollbar-width: none;
+
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+}
+
+.page-section::-webkit-scrollbar {
+    display: none;
 }
 
 .page-section::before {
@@ -150,13 +160,11 @@ md-expressive-theme {
 
 .section-inner {
     width: min(1040px, 100%);
-    max-height: 100%;
+    max-height: none;
     overflow: visible;
     text-align: center;
-
     opacity: 1;
     transform: translateY(0) scale(1);
-
     transition:
         opacity .55s ease,
         transform .7s cubic-bezier(.2, .8, .2, 1);
@@ -188,40 +196,40 @@ md-expressive-theme {
 }
 
 h1 {
+    margin: 0;
     font-size: clamp(42px, 7vw, 76px);
     letter-spacing: -.055em;
-    margin: 0;
     font-weight: 700;
 }
 
 .subtitle {
+    margin: 14px 0 0;
     color: var(--muted);
     font-size: clamp(17px, 2.4vw, 23px);
-    margin: 14px 0 0;
 }
 
 .eyebrow {
+    margin: 0 0 12px;
     color: var(--md-sys-color-primary, #526A92);
+    font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: .12em;
-    font-size: 12px;
-    margin: 0 0 12px;
 }
 
 h2 {
+    margin: 0 0 20px;
     font-size: clamp(30px, 4.5vw, 50px);
     line-height: 1.08;
     letter-spacing: -.04em;
-    margin: 0 0 20px;
 }
 
 .copy {
+    max-width: 760px;
+    margin: 0 auto;
     color: var(--muted);
     font-size: clamp(16px, 1.7vw, 19px);
     line-height: 1.75;
-    max-width: 760px;
-    margin: 0 auto;
 }
 
 .hero-actions {
@@ -240,8 +248,8 @@ md-card.feature {
     display: block;
     min-height: 150px;
     padding: 24px;
-    border-radius: 28px;
     border: 1px solid var(--line);
+    border-radius: 28px;
     color: var(--page-fg);
     background: var(--surface);
     box-shadow: 0 0 0 transparent;
@@ -257,14 +265,15 @@ md-card.feature:hover {
 }
 
 .feature-icon {
+    display: grid;
     width: 34px;
     height: 34px;
     margin-bottom: 18px;
-    display: grid;
     place-items: center;
     color: var(--md-sys-color-primary, #526A92);
     transform: translateY(10px);
 }
+
 .feature-grid md-card.feature:nth-child(3) .feature-icon {
     transform: translateY(6px);
 }
@@ -281,14 +290,14 @@ md-card.feature:hover {
 }
 
 .feature h3 {
-    font-size: 19px;
     margin: 0 0 8px;
+    font-size: 19px;
 }
 
 .feature p {
+    margin: 0;
     color: var(--muted);
     line-height: 1.55;
-    margin: 0;
 }
 
 .download-actions {
@@ -299,14 +308,14 @@ md-card.feature:hover {
 }
 
 .download-version {
+    margin: 12px 0 24px;
     color: var(--muted);
     font-size: 14px;
-    margin: 12px 0 24px;
 }
 
 .download-note {
-    color: var(--muted);
     margin: 0;
+    color: var(--muted);
 }
 
 .footer {
@@ -342,8 +351,8 @@ md-card.feature:hover {
     }
 
     .feature h3 {
-        font-size: 16px;
         margin-bottom: 5px;
+        font-size: 16px;
     }
 
     .feature p {
@@ -373,8 +382,8 @@ md-card.feature:hover {
     }
 
     md-card.feature {
-        padding: 13px 16px;
         min-height: 0;
+        padding: 13px 16px;
     }
 
     .feature-icon {
@@ -404,18 +413,8 @@ md-card.feature:hover {
 </md-expressive-theme>
 
 <header class="topbar" aria-label="Site controls">
-    <md-button
-        id="langRu"
-        variant="tonal"
-        label="RU">
-    </md-button>
-
-    <md-button
-        id="langEn"
-        variant="text"
-        label="EN">
-    </md-button>
-
+    <md-button id="langRu" variant="tonal" label="RU"></md-button>
+    <md-button id="langEn" variant="text" label="EN"></md-button>
     <md-button
         id="themeToggle"
         variant="tonal"
@@ -425,11 +424,7 @@ md-card.feature:hover {
 </header>
 
 <main id="scroller" aria-label="TapChat">
-    <section
-        class="page-section active"
-        data-page="0"
-        aria-label="TapChat">
-
+    <section class="page-section active" data-page="0" aria-label="TapChat">
         <div class="section-inner">
             <div class="brand-mark">
                 <img
@@ -443,14 +438,12 @@ md-card.feature:hover {
                     viewBox="0 0 200 200"
                     role="img"
                     aria-label="TapChat logo">
-
                     <path
                         d="M100 16c-36 0-65 29-65 65v38c0 28 22 50 50 50h10l25 19v-22c27-8 46-33 46-62V81c0-36-29-65-66-65Z"
                         fill="none"
                         stroke="currentColor"
                         stroke-width="9"
                         stroke-linejoin="round"/>
-
                     <path
                         d="M78 78v41m22-55v60m22-49v39"
                         fill="none"
@@ -461,12 +454,7 @@ md-card.feature:hover {
             </div>
 
             <h1>TapChat</h1>
-
-            <p
-                id="subtitle"
-                class="subtitle">
-                Проще, чем кажется.
-            </p>
+            <p id="subtitle" class="subtitle">Проще, чем кажется.</p>
 
             <div class="hero-actions">
                 <md-button
@@ -479,26 +467,11 @@ md-card.feature:hover {
         </div>
     </section>
 
-    <section
-        class="page-section"
-        data-page="1"
-        aria-label="About TapChat">
-
+    <section class="page-section" data-page="1" aria-label="About TapChat">
         <div class="section-inner">
-            <p
-                class="eyebrow"
-                id="aboutEyebrow">
-                О проекте
-            </p>
-
-            <h2 id="aboutTitle">
-                Что такое TapChat?
-            </h2>
-
-            <p
-                id="aboutDesc"
-                class="copy">
-            </p>
+            <p class="eyebrow" id="aboutEyebrow">О проекте</p>
+            <h2 id="aboutTitle">Что такое TapChat?</h2>
+            <p id="aboutDesc" class="copy"></p>
 
             <div class="hero-actions">
                 <md-button
@@ -512,43 +485,25 @@ md-card.feature:hover {
         </div>
     </section>
 
-    <section
-        class="page-section"
-        data-page="2"
-        aria-label="Features">
-
+    <section class="page-section" data-page="2" aria-label="Features">
         <div class="section-inner features-inner">
-            <p
-                class="eyebrow"
-                id="featuresEyebrow">
-                Особенности
-            </p>
-
-            <h2 id="why">
-                Почему TapChat?
-            </h2>
+            <p class="eyebrow" id="featuresEyebrow">Особенности</p>
+            <h2 id="why">Почему TapChat?</h2>
 
             <div class="feature-grid">
                 <md-card class="feature">
-                    <div
-                        class="feature-icon"
-                        aria-hidden="true">
-
+                    <div class="feature-icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24">
                             <path d="M12 3 20 6v5c0 5.2-3.4 8.7-8 10-4.6-1.3-8-4.8-8-10V6l8-3Z"/>
                             <path d="m8.5 12 2.2 2.2 4.8-4.8"/>
                         </svg>
                     </div>
-
                     <h3 data-key="sec1"></h3>
                     <p data-key="sec1desc"></p>
                 </md-card>
 
                 <md-card class="feature">
-                    <div
-                        class="feature-icon"
-                        aria-hidden="true">
-
+                    <div class="feature-icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24">
                             <rect x="9" y="3" width="6" height="5" rx="1"/>
                             <rect x="3" y="16" width="6" height="5" rx="1"/>
@@ -557,39 +512,28 @@ md-card.feature:hover {
                             <path d="M6 16v-2h12v2"/>
                         </svg>
                     </div>
-
                     <h3 data-key="sec2"></h3>
                     <p data-key="sec2desc"></p>
                 </md-card>
 
                 <md-card class="feature">
-                    <div
-                        class="feature-icon"
-                        aria-hidden="true">
-
-                        <div class="feature-icon" aria-hidden="true">
-    			<svg viewBox="0 0 24 24">
-        		<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v7a2.5 2.5 0 0 1-2.5 2.5H12l-4.5 4v-4h-1A2.5 2.5 0 0 1 4 12.5v-7Z"/>
-    			</svg>
-			</div>
+                    <div class="feature-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v7a2.5 2.5 0 0 1-2.5 2.5H12l-4.5 4v-4h-1A2.5 2.5 0 0 1 4 12.5v-7Z"/>
+                        </svg>
                     </div>
-
                     <h3 data-key="sec3"></h3>
                     <p data-key="sec3desc"></p>
                 </md-card>
 
                 <md-card class="feature">
-                    <div
-                        class="feature-icon"
-                        aria-hidden="true">
-
+                    <div class="feature-icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24">
                             <path d="M12 3v12"/>
                             <path d="m7 10 5 5 5-5"/>
                             <path d="M5 20h14"/>
                         </svg>
                     </div>
-
                     <h3 data-key="sec4"></h3>
                     <p data-key="sec4desc"></p>
                 </md-card>
@@ -607,32 +551,12 @@ md-card.feature:hover {
         </div>
     </section>
 
-    <section
-        class="page-section"
-        data-page="3"
-        aria-label="Download TapChat">
-
+    <section class="page-section" data-page="3" aria-label="Download TapChat">
         <div class="section-inner">
-            <p
-                class="eyebrow"
-                id="downloadEyebrow">
-                Начать общение
-            </p>
-
-            <h2 id="downloadTitle">
-                Скачать TapChat
-            </h2>
-
-            <p
-                id="downloadSub"
-                class="download-note">
-                Доступно на Android
-            </p>
-
-            <div
-                id="versionDisplay"
-                class="download-version">
-            </div>
+            <p class="eyebrow" id="downloadEyebrow">Начать общение</p>
+            <h2 id="downloadTitle">Скачать TapChat</h2>
+            <p id="downloadSub" class="download-note">Доступно на Android</p>
+            <div id="versionDisplay" class="download-version"></div>
 
             <div class="download-actions">
                 <md-button
@@ -651,9 +575,7 @@ md-card.feature:hover {
             </div>
         </div>
 
-        <div class="footer">
-            © 2026 TapChat
-        </div>
+        <div class="footer">© 2026 TapChat</div>
     </section>
 </main>
 
@@ -681,12 +603,11 @@ const translations = {
         version: 'Версия ',
         next: 'Узнать больше',
         featuresNext: 'Особенности',
-        downloadNext: 'К загрузкам',
+        downloadNext: 'К загрузке',
         dark: 'Тёмная тема',
         light: 'Светлая тема',
         backToStart: 'В начало'
     },
-
     en: {
         subtitle: 'Easier than it sounds.',
         aboutEyebrow: 'About the project',
@@ -722,9 +643,7 @@ let dark = localStorage.getItem('tapchat-theme') === 'dark';
 const root = document.documentElement;
 const themeEl = document.getElementById('m3eTheme');
 const scroller = document.getElementById('scroller');
-const sections = [
-    ...document.querySelectorAll('.page-section')
-];
+const sections = [...document.querySelectorAll('.page-section')];
 
 let current = 0;
 let locked = false;
@@ -732,44 +651,28 @@ let version = '';
 
 function setTheme() {
     root.dataset.theme = dark ? 'dark' : 'light';
+    themeEl.setAttribute('color-mode', dark ? 'dark' : 'light');
 
-    themeEl.setAttribute(
-        'color-mode',
-        dark ? 'dark' : 'light'
+    document.getElementById('themeToggle').setAttribute(
+        'label',
+        dark ? translations[lang].light : translations[lang].dark
     );
 
-    document
-        .getElementById('themeToggle')
-        .setAttribute(
-            'label',
-            dark
-                ? translations[lang].light
-                : translations[lang].dark
-        );
-
-    document
-        .getElementById('themeToggle')
-        .setAttribute(
-            'icon',
-            dark ? 'light_mode' : 'dark_mode'
-        );
-
-    localStorage.setItem(
-        'tapchat-theme',
-        dark ? 'dark' : 'light'
+    document.getElementById('themeToggle').setAttribute(
+        'icon',
+        dark ? 'light_mode' : 'dark_mode'
     );
+
+    localStorage.setItem('tapchat-theme', dark ? 'dark' : 'light');
 }
 
 function updateVersion() {
     document.getElementById('versionDisplay').textContent =
-        version
-            ? translations[lang].version + version
-            : '';
+        version ? translations[lang].version + version : '';
 }
 
 function setLang(next) {
     lang = next;
-
     localStorage.setItem('tapchat-lang', lang);
     document.documentElement.lang = lang;
 
@@ -789,17 +692,12 @@ function setLang(next) {
 
     for (const id of textIds) {
         const element = document.getElementById(id);
-
-        if (element) {
-            element.textContent = t[id];
-        }
+        if (element) element.textContent = t[id];
     }
 
-    document
-        .querySelectorAll('[data-key]')
-        .forEach(element => {
-            element.textContent = t[element.dataset.key];
-        });
+    document.querySelectorAll('[data-key]').forEach(element => {
+        element.textContent = t[element.dataset.key];
+    });
 
     const labels = [
         ['#heroNext', 'next'],
@@ -810,54 +708,38 @@ function setLang(next) {
     ];
 
     for (const [selector, key] of labels) {
-        document
-            .querySelector(selector)
-            ?.setAttribute('label', t[key]);
+        document.querySelector(selector)?.setAttribute('label', t[key]);
     }
 
-    document
-        .getElementById('langRu')
-        .setAttribute(
-            'variant',
-            lang === 'ru' ? 'filled' : 'text'
-        );
+    document.getElementById('langRu').setAttribute(
+        'variant',
+        lang === 'ru' ? 'filled' : 'text'
+    );
 
-    document
-        .getElementById('langEn')
-        .setAttribute(
-            'variant',
-            lang === 'en' ? 'filled' : 'text'
-        );
+    document.getElementById('langEn').setAttribute(
+        'variant',
+        lang === 'en' ? 'filled' : 'text'
+    );
 
     setTheme();
     updateVersion();
 }
 
 function goTo(index, force = false) {
-    const next = Math.max(
-        0,
-        Math.min(sections.length - 1, index)
-    );
+    const next = Math.max(0, Math.min(sections.length - 1, index));
 
-    if (!force && (next === current || locked)) {
-        return;
-    }
+    if (!force && (next === current || locked)) return;
 
     locked = true;
     current = next;
 
     sections.forEach((section, index) => {
-        section.classList.toggle(
-            'active',
-            index === current
-        );
+        section.classList.toggle('active', index === current);
     });
 
     scroller.scrollTo({
         top: sections[next].offsetTop,
-        behavior: window.matchMedia(
-            '(prefers-reduced-motion: reduce)'
-        ).matches
+        behavior: matchMedia('(prefers-reduced-motion: reduce)').matches
             ? 'auto'
             : 'smooth'
     });
@@ -867,154 +749,124 @@ function goTo(index, force = false) {
     }, 850);
 }
 
-document
-    .getElementById('langRu')
-    .addEventListener('click', () => {
-        setLang('ru');
-    });
+document.getElementById('langRu').addEventListener('click', () => {
+    setLang('ru');
+});
 
-document
-    .getElementById('langEn')
-    .addEventListener('click', () => {
-        setLang('en');
-    });
+document.getElementById('langEn').addEventListener('click', () => {
+    setLang('en');
+});
 
-document
-    .getElementById('themeToggle')
-    .addEventListener('click', () => {
-        dark = !dark;
-        setTheme();
-    });
+document.getElementById('themeToggle').addEventListener('click', () => {
+    dark = !dark;
+    setTheme();
+});
 
-scroller.addEventListener(
-    'wheel',
-    event => {
-        event.preventDefault();
+/*
+ * Колесо сначала прокручивает текущую секцию.
+ * Если секция уже у края, переходим к соседней.
+ */
+scroller.addEventListener('wheel', event => {
+    const section = sections[current];
+    if (!section) return;
 
-        if (locked) {
-            return;
-        }
+    const delta = Math.abs(event.deltaY) > Math.abs(event.deltaX)
+        ? event.deltaY
+        : event.deltaX;
 
-        const delta =
-            Math.abs(event.deltaY) > Math.abs(event.deltaX)
-                ? event.deltaY
-                : event.deltaX;
+    if (Math.abs(delta) < 12) return;
 
-        if (Math.abs(delta) < 12) {
-            return;
-        }
+    const maxScroll = section.scrollHeight - section.clientHeight;
+    const atBottom = section.scrollTop >= maxScroll - 2;
+    const atTop = section.scrollTop <= 2;
 
-        goTo(
-            current + (delta > 0 ? 1 : -1)
-        );
-    },
-    {
-        passive: false
+    if (delta > 0 && !atBottom) {
+        return; // Обычная прокрутка содержимого секции
     }
-);
 
+    if (delta < 0 && !atTop) {
+        return; // Обычная прокрутка содержимого секции
+    }
+
+    event.preventDefault();
+    goTo(current + (delta > 0 ? 1 : -1));
+}, { passive: false });
+
+/*
+ * На сенсорном экране секция сначала прокручивается нативно.
+ * Переход срабатывает, если свайп начался, когда секция уже
+ * находилась у верхней или нижней границы.
+ */
 let touchStartY = null;
+let touchStartSection = null;
+let touchStartedAtTop = false;
+let touchStartedAtBottom = false;
 
-scroller.addEventListener(
-    'touchstart',
-    event => {
-        touchStartY = event.touches[0].clientY;
-    },
-    {
-        passive: true
-    }
-);
+scroller.addEventListener('touchstart', event => {
+    const section = sections[current];
+    if (!section) return;
 
-scroller.addEventListener(
-    'touchend',
-    event => {
-        if (touchStartY === null) {
-            return;
+    touchStartY = event.touches[0].clientY;
+    touchStartSection = section;
+
+    const maxScroll = section.scrollHeight - section.clientHeight;
+    touchStartedAtTop = section.scrollTop <= 2;
+    touchStartedAtBottom = section.scrollTop >= maxScroll - 2;
+}, { passive: true });
+
+scroller.addEventListener('touchend', event => {
+    if (touchStartY === null || !touchStartSection) return;
+
+    const delta = touchStartY - event.changedTouches[0].clientY;
+    const distanceThreshold = 45;
+
+    if (Math.abs(delta) >= distanceThreshold) {
+        if (delta > 0 && touchStartedAtBottom) {
+            goTo(current + 1);
+        } else if (delta < 0 && touchStartedAtTop) {
+            goTo(current - 1);
         }
-
-        const delta =
-            touchStartY -
-            event.changedTouches[0].clientY;
-
-        if (Math.abs(delta) > 45) {
-            goTo(
-                current + (delta > 0 ? 1 : -1)
-            );
-        }
-
-        touchStartY = null;
-    },
-    {
-        passive: true
     }
-);
+
+    touchStartY = null;
+    touchStartSection = null;
+    touchStartedAtTop = false;
+    touchStartedAtBottom = false;
+}, { passive: true });
 
 window.addEventListener('keydown', event => {
-    if (
-        ['ArrowDown', 'PageDown', ' ']
-            .includes(event.key)
-    ) {
+    if (['ArrowDown', 'PageDown', ' '].includes(event.key)) {
         event.preventDefault();
         goTo(current + 1);
-    }
-
-    if (
-        ['ArrowUp', 'PageUp']
-            .includes(event.key)
-    ) {
+    } else if (['ArrowUp', 'PageUp'].includes(event.key)) {
         event.preventDefault();
         goTo(current - 1);
-    }
-
-    if (event.key === 'Home') {
+    } else if (event.key === 'Home') {
         event.preventDefault();
         goTo(0);
-    }
-
-    if (event.key === 'End') {
+    } else if (event.key === 'End') {
         event.preventDefault();
         goTo(sections.length - 1);
     }
 });
 
-document
-    .getElementById('heroNext')
-    .addEventListener('click', () => {
-        goTo(1);
+document.getElementById('heroNext').addEventListener('click', () => {
+    goTo(1);
+});
+
+document.querySelectorAll('.next-page').forEach(element => {
+    element.addEventListener('click', () => {
+        goTo(Number(element.dataset.next));
     });
+});
 
-document
-    .querySelectorAll('.next-page')
-    .forEach(element => {
-        element.addEventListener('click', () => {
-            goTo(
-                Number(element.dataset.next)
-            );
-        });
-    });
-
-document
-    .getElementById('backToStart')
-    .addEventListener('click', () => {
-        current = 0;
-        locked = true;
-
-        scroller.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-
-        window.setTimeout(() => {
-            locked = false;
-        }, 850);
-    });
+document.getElementById('backToStart').addEventListener('click', () => {
+    goTo(0, true);
+});
 
 fetch('version.json?_=' + Date.now())
     .then(response => {
-        if (!response.ok) {
-            throw new Error(response.status);
-        }
-
+        if (!response.ok) throw new Error(response.status);
         return response.json();
     })
     .then(data => {
@@ -1022,26 +874,18 @@ fetch('version.json?_=' + Date.now())
         updateVersion();
 
         if (data.url) {
-            document
-                .getElementById('downloadBtn')
-                .addEventListener('click', () => {
-                    const link = document.createElement('a');
-
-                    link.href = data.url;
-                    link.download =
-                        data.url.split('/').pop()
-                        || 'TapChat.apk';
-
-                    document.body.appendChild(link);
-                    link.click();
-                    link.remove();
-                });
+            document.getElementById('downloadBtn').addEventListener('click', () => {
+                const link = document.createElement('a');
+                link.href = data.url;
+                link.download = data.url.split('/').pop() || 'TapChat.apk';
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+            });
         }
     })
     .catch(() => {
-        console.info(
-            'version.json unavailable; add it beside index.html'
-        );
+        console.info('version.json unavailable; add it beside index.html');
     });
 
 setLang(lang);
@@ -1050,21 +894,13 @@ function showPageAfterM3ELoaded() {
     document.body.classList.add('theme-ready');
 }
 
-customElements
-    .whenDefined('md-expressive-theme')
-    .then(() => {
-        requestAnimationFrame(() => {
-            requestAnimationFrame(
-                showPageAfterM3ELoaded
-            );
-        });
-    })
-    .catch(showPageAfterM3ELoaded);
+customElements.whenDefined('md-expressive-theme').then(() => {
+    requestAnimationFrame(() => {
+        requestAnimationFrame(showPageAfterM3ELoaded);
+    });
+}).catch(showPageAfterM3ELoaded);
 
-setTimeout(
-    showPageAfterM3ELoaded,
-    3000
-);
+setTimeout(showPageAfterM3ELoaded, 3000);
 </script>
 </body>
 </html>
